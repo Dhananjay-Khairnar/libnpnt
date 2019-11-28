@@ -5,22 +5,21 @@
  */
 
 
-
+#pragma once
  /**
  * @file    inc/defines.h
  * @brief   Common Defines
  * @{
  */
-#ifndef DEFINES_H
-#define DEFINES_H
-
 #include <stdint.h>
 #include <stddef.h>
 #include <stdlib.h>
+#include <stdbool.h>
 #include <string.h>
 #include <time.h>
 #include <mxml/mxml.h>
-
+// Defined by user
+#include <npnt_config.h>
 
 #ifdef __cplusplus
 extern "C"
@@ -28,23 +27,39 @@ extern "C"
 #endif
 
 typedef struct {
-    char *raw_permart;
-    uint16_t raw_permart_len;
-    void*   security_handle;
-    mxml_node_t *parsed_permart;
+    struct {
+        char *raw_permart;
+        uint16_t raw_permart_len;
+        mxml_node_t *parsed_permart;
+        npnt_sha_t pa_sha_handler;
+        uint8_t id[16];
+        uint8_t id_len;
+    } pa_params;
+
     struct {
         float* vertlat;     //degrees
         float* vertlon;     //degrees
         float maxAltitude; //meters
         uint8_t nverts;
     } fence;
+
     struct {
         char* uinNo;
         char* adcNumber;
         char* ficNumber;
         struct tm flightStartTime;
         struct tm flightEndTime;
-    } params;
+    } flight_params;
+
+    struct {
+        bool log_started;
+        char last_loghash[DIGEST_VALUE_LEN];
+        int  log_fd;
+        char curr_loghash[DIGEST_VALUE_LEN];
+        char base64_buffer[3];
+        int8_t base64_buffer_idx;
+        npnt_sha_t sha_handler;
+    } logger;
 } npnt_s;
 
 #define NPNT_INV_ART                -1
@@ -62,7 +77,5 @@ typedef struct {
 #ifdef __cplusplus
 } // extern "C"
 #endif
-
-#endif //#ifndef DEFINES_H
 
  /** @} */

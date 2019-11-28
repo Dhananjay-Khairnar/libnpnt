@@ -33,6 +33,7 @@ extern "C"
  * not included in out_len.
  */
 uint8_t* base64_encode(const uint8_t *src, uint16_t len, uint16_t *out_len);
+uint8_t* base64url_encode(const uint8_t *src, uint16_t len, uint16_t *out_len);
 
 /**
  * base64_decode - Base64 decode

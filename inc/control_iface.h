@@ -3,9 +3,6 @@
  *  License, v. 2.0. If a copy of the MPL was not distributed with this
  *  file, You can obtain one at http://mozilla.org/MPL/2.0/. 
  */
-
-#ifndef CONTROL_IFACE_H
-#define CONTROL_IFACE_H 
  /**
  * @file    inc/control_iface.h
  * @brief   Interface definitions for NPNT control
@@ -126,5 +123,3 @@ bool npnt_pnpoly(int nvert, float *vertx, float *verty, float testx, float testy
 #ifdef __cplusplus
 } // extern "C"
 #endif
-
-#endif //CONTROL_IFACE_H

@@ -14,7 +14,18 @@
 
 #include <defines.h>
 
-//User Implemented Methods
+#ifdef __cplusplus
+extern "C"
+{
+#endif
+int npnt_start_logger(npnt_s* handle, time_t unix_ts, float lat, float lon, float alt);
+int npnt_stop_logger(npnt_s* handle, time_t unix_ts, float lat, float lon, float alt);
+int npnt_log_gps_fail_event(npnt_s* handle, time_t unix_ts, float lat, float lon, float alt);
+int npnt_log_fence_breach_event(npnt_s* handle, time_t unix_ts, float lat, float lon, float alt);
+int npnt_log_time_breach_event(npnt_s* handle, time_t unix_ts, float lat, float lon, float alt);
 
+#ifdef __cplusplus
+} // extern "C"
+#endif
 
  /** @} */

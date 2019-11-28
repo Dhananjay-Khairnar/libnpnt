@@ -9,6 +9,8 @@
 #include <npnt_internal.h>
 
 static const uint8_t base64_table[65] = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/";
+static const uint8_t base64url_table[65] = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789-_";
+
 
 /**
  * base64_encode - Base64 encode
@@ -22,7 +24,7 @@ static const uint8_t base64_table[65] = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklm
  * nul terminated to make it easier to use as a C string. The nul terminator is
  * not included in out_len.
  */
-uint8_t* base64_encode(const uint8_t *src, uint16_t len, uint16_t *out_len)
+uint8_t* base64_encode_global(const uint8_t *src, uint16_t len, uint16_t *out_len, const uint8_t* table, bool urlsafe)
 {
 	uint8_t *out, *pos;
 	const uint8_t *end, *in;
@@ -30,7 +32,10 @@ uint8_t* base64_encode(const uint8_t *src, uint16_t len, uint16_t *out_len)
 	int16_t line_len;
 
 	olen = len * 4 / 3 + 4; /* 3-byte blocks to 4-byte */
-	olen += olen / 72; /* line feeds */
+	if (!urlsafe) {
+		olen += olen / 72; /* line feeds */
+	}
+
 	olen++; /* nul termination */
 	if (olen < len) {
 		return NULL; /* integer overflow */
@@ -45,33 +50,39 @@ uint8_t* base64_encode(const uint8_t *src, uint16_t len, uint16_t *out_len)
 	pos = out;
 	line_len = 0;
 	while (end - in >= 3) {
-		*pos++ = base64_table[in[0] >> 2];
-		*pos++ = base64_table[((in[0] & 0x03) << 4) | (in[1] >> 4)];
-		*pos++ = base64_table[((in[1] & 0x0f) << 2) | (in[2] >> 6)];
-		*pos++ = base64_table[in[2] & 0x3f];
+		*pos++ = table[in[0] >> 2];
+		*pos++ = table[((in[0] & 0x03) << 4) | (in[1] >> 4)];
+		*pos++ = table[((in[1] & 0x0f) << 2) | (in[2] >> 6)];
+		*pos++ = table[in[2] & 0x3f];
 		in += 3;
-		line_len += 4;
-		if (line_len >= 72) {
-			*pos++ = '\n';
-			line_len = 0;
+		if (!urlsafe) {
+			line_len += 4;
+			if (line_len >= 72) {
+				*pos++ = '\n';
+				line_len = 0;
+			}
 		}
 	}
 
 	if (end - in) {
-		*pos++ = base64_table[in[0] >> 2];
+		*pos++ = table[in[0] >> 2];
 		if (end - in == 1) {
-			*pos++ = base64_table[(in[0] & 0x03) << 4];
-			*pos++ = '=';
+			*pos++ = table[(in[0] & 0x03) << 4];
+			if(!urlsafe) {
+				*pos++ = '=';
+			}
 		} else {
-			*pos++ = base64_table[((in[0] & 0x03) << 4) |
+			*pos++ = table[((in[0] & 0x03) << 4) |
 					      (in[1] >> 4)];
-			*pos++ = base64_table[(in[1] & 0x0f) << 2];
+			*pos++ = table[(in[1] & 0x0f) << 2];
 		}
-		*pos++ = '=';
+		if (!urlsafe) {
+			*pos++ = '=';
+		}
 		line_len += 4;
 	}
 
-	if (line_len) {
+	if (line_len && !urlsafe) {
 		*pos++ = '\n';
 	}
 
@@ -81,6 +92,19 @@ uint8_t* base64_encode(const uint8_t *src, uint16_t len, uint16_t *out_len)
 	}
 	return out;
 }
+
+
+uint8_t* base64_encode(const uint8_t *src, uint16_t len, uint16_t *out_len)
+{
+	return base64_encode_global(src, len, out_len, base64_table, false);
+}
+
+//Reference: https://tools.ietf.org/html/rfc4648#section-5
+uint8_t* base64url_encode(const uint8_t *src, uint16_t len, uint16_t *out_len)
+{
+	return base64_encode_global(src, len, out_len, base64url_table, true);
+}
+
 
 
 /**
