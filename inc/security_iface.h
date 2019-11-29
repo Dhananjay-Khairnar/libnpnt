@@ -37,41 +37,6 @@ extern "C"
  */
 int npnt_check_authenticity(npnt_s *handle, const char* hashed_data, uint16_t hashed_data_len, const uint8_t* signature, uint16_t signature_len);
 
-/**
- * @brief   Signs raw data.
- * @details Implementer of this method needs to sign the raw data
- *          and signature against the private key generated in-system.
- *
- * @param[in] npnt_handle        npnt handle
- * @param[in] raw_data           signed raw data to be authenticated
- * @param[in] raw_data_len       signed raw data to be authenticated
- * @param[in] signature          signature of signed raw data
- * @param[in] signature_len      length of signature
- * @param[out] signature_len     updated length of signature
- * 
- * @return           Errcode of signature failure, 0 if signature was generated successfully
- * @retval 0         Successfully Signed
- *
- * @iclass security_iface
- */
-int8_t npnt_sign_raw_data(npnt_s *handle, uint8_t* raw_data, uint16_t raw_data_len, uint8_t* signature, uint16_t* signature_len);
-
-
-//Implemented by libnpnt
-
-/**
- * @brief   Initialise Security interface.
- * @details This method calls the necessary methods to setup security 
- *          interface
- *
- * @param[in] npnt_handle        npnt handle
- * 
- * @return           Errcode of failure, 0 if successful
- * @retval 0         Iface Successfully Setup
- *
- * @iclass security_iface
- */
-int8_t npnt_security_init(npnt_s* handle);
 
 #ifdef __cplusplus
 } // extern "C"

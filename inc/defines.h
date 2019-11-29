@@ -16,7 +16,6 @@
 #include <stdlib.h>
 #include <stdbool.h>
 #include <string.h>
-#include <time.h>
 #include <mxml/mxml.h>
 // Defined by user
 #include <npnt_config.h>

@@ -225,5 +225,7 @@ int npnt_stop_logger(npnt_s* handle, time_t unix_ts, float lat, float lon, float
 
     close_logfile(handle);
     handle->logger.log_started = false;
+    free(signature);
+    free(base64_signature);
     return 0;
 }
