@@ -41,15 +41,15 @@ int8_t npnt_reset_handle(npnt_s *handle)
     }
 
     if (handle->flight_params.uinNo) {
-        free(handle->flight_params.uinNo);
+        handle->flight_params.uinNo = NULL;
     }
 
     if (handle->flight_params.adcNumber) {
-        free(handle->flight_params.adcNumber);
+        handle->flight_params.adcNumber = NULL;
     }
 
     if (handle->flight_params.ficNumber) {
-        free(handle->flight_params.ficNumber);
+        handle->flight_params.ficNumber = NULL;
     }
 
     memset(handle, 0, sizeof(npnt_s));
